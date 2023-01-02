@@ -29,7 +29,7 @@ export class AuthService {
     }
 
     private generateToken(user: UserDocument) {
-        const payload = {_id: user._id}
+        const payload = {_id: user._id, role: user.role.value}
         return {
             username: user.username,
             email: user.email,

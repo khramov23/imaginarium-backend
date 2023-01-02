@@ -1,14 +1,18 @@
-import {Body, Controller, Delete, Get, Param, Patch, Post} from '@nestjs/common';
+import {Body, Controller, Delete, Get, Param, Patch, Post, UseGuards} from '@nestjs/common';
 import {UserService} from "./user.service";
 import {CreateUserDto} from "./dto/create-user.dto";
 import {Types} from "mongoose";
 import {UpdateUserDto} from "./dto/update-user.dto";
+import {Roles} from "../auth/decorators/roles.decorator";
+import {RolesGuard} from "../auth/guards/roles.guard";
 
 @Controller('users')
 export class UserController {
 
     constructor(private readonly userService: UserService) {}
 
+    @Roles('admin', 'manager')
+    @UseGuards(RolesGuard)
     @Get()
     getAll() {
         return this.userService.getAll()
