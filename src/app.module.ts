@@ -5,6 +5,7 @@ import { AppService } from './app.service';
 import {MongooseModule} from "@nestjs/mongoose";
 import {getMongoConfig} from "./config/mongo.config";
 import { RoleModule } from './role/role.module';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -14,7 +15,8 @@ import { RoleModule } from './role/role.module';
           inject: [ConfigService],
           useFactory: getMongoConfig
       }),
-      RoleModule
+      RoleModule,
+      UserModule
   ],
   controllers: [AppController],
   providers: [AppService],
