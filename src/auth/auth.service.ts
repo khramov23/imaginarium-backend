@@ -12,7 +12,10 @@ export class AuthService {
         private readonly userService: UserService,
         private readonly jwtService: JwtService
     ) {}
-    
+
+    async login(dto: CreateUserDto) {
+
+    }
 
     async registration(dto: CreateUserDto) {
         const candidate = await this.userService.getByEmail(dto.email)
@@ -33,4 +36,6 @@ export class AuthService {
             token: this.jwtService.sign(payload)
         }
     }
+
+
 }
