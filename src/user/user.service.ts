@@ -1,10 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import {Injectable} from '@nestjs/common';
 import {InjectModel} from "@nestjs/mongoose";
-import { Model, Types } from 'mongoose';
+import {Model, Types} from 'mongoose';
 import {User, UserDocument} from "./user.model";
 import {CreateUserDto} from "./dto/create-user.dto";
 import {Role, RoleDocument} from "../role/role.model";
 import {UpdateUserDto} from "./dto/update-user.dto";
+import * as bcrypt from 'bcryptjs'
 
 @Injectable()
 export class UserService {
@@ -32,12 +33,23 @@ export class UserService {
     }
 
     async update(id: Types.ObjectId, dto: UpdateUserDto): Promise<UserDocument> {
-        let role
-        if (dto.roleValue)
-            role = await this.roleModel.findOne({value: dto.roleValue})
-        if (!role)
-            return this.userModel.findByIdAndUpdate(id, {...dto}, {new: true})
-        return this.userModel.findByIdAndUpdate(id, {...dto, role}, {new: true})
+        const resultDto = {}
+        for (const [key, value] of Object.entries(dto))
+            if (key !== "role")
+                resultDto[key] = value
+
+        if (dto.roleValue) {
+            const role = await this.roleModel.findOne({value: dto.roleValue})
+            if (role) {
+                resultDto['role'] = role
+            }
+            delete resultDto['roleValue']
+        }
+
+        if (dto.password) {
+            resultDto['password'] = await bcrypt.hash(dto.password, 5)
+        }
+        return this.userModel.findByIdAndUpdate(id, {...resultDto}, {new: true})
     }
 
     async delete(id: Types.ObjectId): Promise<UserDocument> {
