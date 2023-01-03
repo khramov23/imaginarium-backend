@@ -1,12 +1,13 @@
-import {Body, Controller, Delete, Get, Param, Patch, Post, UseGuards} from '@nestjs/common';
+import {Body, Controller, Delete, Get, Param, Patch, Post, UseGuards, UsePipes, ValidationPipe} from '@nestjs/common';
 import {UserService} from "./user.service";
 import {CreateUserDto} from "./dto/create-user.dto";
-import {Types} from "mongoose";
 import {UpdateUserDto} from "./dto/update-user.dto";
 import {Roles} from "../auth/decorators/roles.decorator";
 import {RolesGuard} from "../auth/guards/roles.guard";
+import {SearchParams} from "../validators/param.validator";
 
 @Controller('users')
+@UsePipes(ValidationPipe)
 export class UserController {
 
     constructor(private readonly userService: UserService) {}
@@ -19,8 +20,8 @@ export class UserController {
     }
 
     @Get(':id')
-    getById(@Param('id') id: Types.ObjectId) {
-        return this.userService.getById(id)
+    getById(@Param() params: SearchParams) {
+        return this.userService.getById(params.id)
     }
 
     @Post()
@@ -29,13 +30,13 @@ export class UserController {
     }
 
     @Delete(':id')
-    delete(@Param('id') id: Types.ObjectId) {
-        return this.userService.delete(id)
+    delete(@Param() params: SearchParams) {
+        return this.userService.delete(params.id)
     }
 
     @Patch(':id')
-    update(@Param('id') id: Types.ObjectId, @Body() dto: UpdateUserDto) {
-        return this.userService.update(id, dto)
+    update(@Param() params: SearchParams, @Body() dto: UpdateUserDto) {
+        return this.userService.update(params.id, dto)
     }
 
 }

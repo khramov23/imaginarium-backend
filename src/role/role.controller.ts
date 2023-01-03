@@ -1,7 +1,7 @@
 import {Body, Controller, Delete, Get, Param, Post} from '@nestjs/common';
 import {RoleService} from "./role.service";
 import {CreateRoleDto} from "./dto/create-role.dto";
-import {Types} from "mongoose";
+import {SearchParams} from "../validators/param.validator";
 
 @Controller('roles')
 export class RoleController {
@@ -19,7 +19,7 @@ export class RoleController {
     }
 
     @Delete(':id')
-    delete(@Param('id') id: Types.ObjectId) {
-        return this.roleService.delete(id)
+    delete(@Param() params: SearchParams) {
+        return this.roleService.delete(params.id)
     }
 }

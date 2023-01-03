@@ -31,7 +31,6 @@ export class RolesGuard implements CanActivate {
             const authHeaderSplit = authHeader.split(' ')
             const bearer = authHeaderSplit[0]
             const token = authHeaderSplit[1]
-            console.log(bearer, token)
             if (bearer !== "Bearer" || !token) {
                 throw new UnauthorizedException({message: "User is not signed"})
             }
