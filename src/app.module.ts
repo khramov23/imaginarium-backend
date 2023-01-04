@@ -5,6 +5,7 @@ import {getMongoConfig} from "./config/mongo.config";
 import {RoleModule} from './role/role.module';
 import {UserModule} from './user/user.module';
 import {AuthModule} from './auth/auth.module';
+import { TagModule } from './tag/tag.module';
 
 @Module({
     imports: [
@@ -16,7 +17,8 @@ import {AuthModule} from './auth/auth.module';
         }),
         RoleModule,
         UserModule,
-        AuthModule
+        AuthModule,
+        TagModule
     ],
 })
 export class AppModule {
