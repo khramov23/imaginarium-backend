@@ -11,7 +11,7 @@ export class Image {
     @Prop({ unique: true })
     src: string;
 
-    @Prop({ type: Types.ObjectId, ref: User.name })
+    @Prop({ type: Types.ObjectId, ref: "User" })
     author: User;
 
     @Prop()
