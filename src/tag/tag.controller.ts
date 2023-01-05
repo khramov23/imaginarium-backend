@@ -13,6 +13,11 @@ export class TagController {
     return this.tagService.getAll()
   }
 
+  @Delete()
+  deleteAll() {
+    return this.tagService.deleteAll()
+  }
+
   @Post()
   create(@Body() dto: CreateTagDto) {
     return this.tagService.create(dto)

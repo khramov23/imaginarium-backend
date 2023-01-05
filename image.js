@@ -62,7 +62,6 @@ jimp.read('./images/10.jpg', (err, lenna) => {
         }
     }
 
-    console.log("Pixels: " + counter)
     normalize(stats)
     console.log(stats)
 

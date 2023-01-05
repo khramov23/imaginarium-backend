@@ -7,6 +7,10 @@ export type TagDocument = HydratedDocument<Tag>;
 export class Tag {
     @Prop({ unique: true })
     value: string;
+
+    @Prop()
+    count: number
+
 }
 
 export const TagSchema = SchemaFactory.createForClass(Tag);

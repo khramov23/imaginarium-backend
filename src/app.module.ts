@@ -6,6 +6,9 @@ import {RoleModule} from './role/role.module';
 import {UserModule} from './user/user.module';
 import {AuthModule} from './auth/auth.module';
 import { TagModule } from './tag/tag.module';
+import { ImageModule } from './image/image.module';
+import { FileModule } from './file/file.module';
+import { ColorsModule } from './colors/colors.module';
 
 @Module({
     imports: [
@@ -18,7 +21,10 @@ import { TagModule } from './tag/tag.module';
         RoleModule,
         UserModule,
         AuthModule,
-        TagModule
+        TagModule,
+        ImageModule,
+        FileModule,
+        ColorsModule
     ],
 })
 export class AppModule {
