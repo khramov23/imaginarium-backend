@@ -1,4 +1,4 @@
-import {Injectable, InternalServerErrorException} from '@nestjs/common';
+import {Injectable} from '@nestjs/common';
 import {InjectModel} from "@nestjs/mongoose";
 import {Colors, ColorsDocument} from "./colors.model";
 import {Model} from "mongoose";
@@ -38,7 +38,7 @@ export class ColorsService {
     }
 
     async getImageInfo(src: string): Promise<ImageInfo> {
-        const filePath = path.resolve(__dirname, "..", "static", src)
+        const filePath = path.resolve(__dirname, "..", "static", 'images', src)
 
         const imageInfo: ImageInfo = {
             colors: {} as Colors,

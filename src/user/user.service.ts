@@ -6,13 +6,15 @@ import {CreateUserDto} from "./dto/create-user.dto";
 import {Role, RoleDocument} from "../role/role.model";
 import {UpdateUserDto} from "./dto/update-user.dto";
 import * as bcrypt from 'bcryptjs'
+import {FileService} from "../file/file.service";
 
 @Injectable()
 export class UserService {
 
     constructor(
         @InjectModel(User.name) private userModel: Model<UserDocument>,
-        @InjectModel(Role.name) private roleModel: Model<RoleDocument>
+        @InjectModel(Role.name) private roleModel: Model<RoleDocument>,
+        private readonly fileService: FileService
     ) {}
 
     async getAll(): Promise<UserDocument[]> {
@@ -54,5 +56,11 @@ export class UserService {
 
     async delete(id: Types.ObjectId): Promise<UserDocument> {
         return this.userModel.findByIdAndDelete(id)
+    }
+
+    async addAvatar(id: Types.ObjectId, avatar: Express.Multer.File): Promise<UserDocument> {
+        const avatarPath = await this.fileService.createFile(avatar, 'avatars')
+        const user = await this.userModel.findByIdAndUpdate(id, {avatar: avatarPath}, {new: true})
+        return user
     }
 }

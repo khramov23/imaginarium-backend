@@ -1,4 +1,16 @@
-import {Body, Controller, Delete, Get, Param, Patch, Post, UseGuards, UsePipes, ValidationPipe} from '@nestjs/common';
+import {
+    Body,
+    Controller,
+    Delete,
+    Get,
+    Param,
+    Patch,
+    Post, UploadedFile,
+    UseGuards,
+    UseInterceptors,
+    UsePipes,
+    ValidationPipe
+} from '@nestjs/common';
 import {UserService} from "./user.service";
 import {CreateUserDto} from "./dto/create-user.dto";
 import {UpdateUserDto} from "./dto/update-user.dto";
@@ -6,6 +18,9 @@ import {Roles} from "../auth/decorators/roles.decorator";
 import {RolesGuard} from "../auth/guards/roles.guard";
 import {SearchParams} from "../validators/param.validator";
 import {JwtAuthGuard} from "../auth/guards/jwt-auth.guard";
+import {User} from "./decorators/user.decorator";
+import {Types} from "mongoose";
+import {FileInterceptor} from "@nestjs/platform-express";
 
 @Controller('users')
 @UsePipes(ValidationPipe)
@@ -45,6 +60,13 @@ export class UserController {
     @UseGuards(RolesGuard)
     update(@Param() params: SearchParams, @Body() dto: UpdateUserDto) {
         return this.userService.update(params.id, dto)
+    }
+
+    @Post('/add-avatar')
+    @UseGuards(JwtAuthGuard)
+    @UseInterceptors(FileInterceptor('avatar'))
+    addAvatar(@User('_id') id: Types.ObjectId, @UploadedFile() avatar) {
+        return this.userService.addAvatar(id, avatar)
     }
 
 }

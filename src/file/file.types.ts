@@ -1,0 +1,1 @@
+export type ImgType = 'avatars' | "images"
