@@ -43,7 +43,7 @@ export class ImageService {
 
         const imageInfo = await this.colorsService.getImageInfo(src)
 
-        return this.imageModel.create({
+        const img = await this.imageModel.create({
             src,
             author: user,
             title: dto.title,
@@ -53,6 +53,11 @@ export class ImageService {
             likes: 0,
             tags
         })
+
+        user.own.push(img._id)
+        await user.save()
+
+        return img
     }
 
     async delete(id: Types.ObjectId) {
@@ -62,4 +67,23 @@ export class ImageService {
         return image.delete()
     }
 
+    async like(userId: Types.ObjectId, imageId: Types.ObjectId): Promise<ImageDocument> {
+        const user = await this.userService.getById(userId)
+        const image = await this.imageModel.findById(imageId)
+
+        const alreadyLiked = !!user.favorites.find(id => String(id) === String(image._id))
+
+        if (!alreadyLiked) {
+            user.favorites.push(image._id)
+            image.likes += 1
+        } else {
+            user.favorites = user.favorites.filter(id => String(id) !== String(image._id))
+            image.likes -= 1
+        }
+
+        await user.save()
+        await image.save()
+
+        return image
+    }
 }

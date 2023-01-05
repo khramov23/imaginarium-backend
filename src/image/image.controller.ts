@@ -32,6 +32,12 @@ export class ImageController {
         return this.imageService.create(userId, dto, image)
     }
 
+    @Post("/likes/:id")
+    @UseGuards(JwtAuthGuard)
+    like(@User('_id') userId, @Param() params: SearchParams) {
+        return this.imageService.like(userId, params.id)
+    }
+
     @Delete(':id')
     @Roles('manager', 'admin')
     @UseGuards(RolesGuard)
