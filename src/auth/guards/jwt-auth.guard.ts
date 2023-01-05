@@ -16,12 +16,14 @@ export class JwtAuthGuard implements CanActivate {
             if (bearer !== "Bearer" || !token) {
                 throw new UnauthorizedException({message: "User is not signed"})
             }
+            console.log(token)
             const user = this.jwtService.verify(token)
             req.user = user
             return true
         } catch (e) {
-            throw new UnauthorizedException({message: "User is not signed"})
+            throw new UnauthorizedException({message: "Incorrect token"})
         }
     }
 
 }
+

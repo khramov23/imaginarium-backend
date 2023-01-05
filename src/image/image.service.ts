@@ -28,9 +28,9 @@ export class ImageService {
         return this.imageModel.deleteMany()
     }
 
-    async create(dto: CreateImageDto, image: Express.Multer.File): Promise<ImageDocument> {
+    async create(userId: Types.ObjectId, dto: CreateImageDto, image: Express.Multer.File): Promise<ImageDocument> {
         const src = await this.fileService.createFile(image)
-        const user  = await this.userService.getById(dto.userId)
+        const user  = await this.userService.getById(userId)
         if (!user) {
             throw new NotFoundException({message: "User with this Id not found"})
         }
