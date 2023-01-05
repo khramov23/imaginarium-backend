@@ -69,4 +69,16 @@ export class UserController {
         return this.userService.addAvatar(id, avatar)
     }
 
+    @Post('/subscribe/:id')
+    @UseGuards(JwtAuthGuard)
+    subscribe(@User('_id') id: Types.ObjectId, @Param() params: SearchParams) {
+        return this.userService.subscribe(id, params.id)
+    }
+
+    @Post('/unsubscribe/:id')
+    @UseGuards(JwtAuthGuard)
+    unsubscribe(@User('_id') id: Types.ObjectId, @Param() params: SearchParams) {
+        return this.userService.unsubscribe(id, params.id)
+    }
+
 }

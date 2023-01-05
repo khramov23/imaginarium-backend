@@ -1,4 +1,4 @@
-import {Injectable} from '@nestjs/common';
+import {Injectable, NotFoundException} from '@nestjs/common';
 import {InjectModel} from "@nestjs/mongoose";
 import {Model, Types} from 'mongoose';
 import {User, UserDocument} from "./user.model";
@@ -62,5 +62,33 @@ export class UserService {
         const avatarPath = await this.fileService.createFile(avatar, 'avatars')
         const user = await this.userModel.findByIdAndUpdate(id, {avatar: avatarPath}, {new: true})
         return user
+    }
+
+    async subscribe(from: Types.ObjectId, to: Types.ObjectId): Promise<UserDocument[]> {
+        const me = await this.getById(from)
+        if (!me)
+            throw new NotFoundException({message: `User with id ${from} not found`})
+        const him = await this.getById(to)
+        if (!him)
+            throw new NotFoundException({message: `User with id ${to} not found`})
+        him.followers.push(me._id)
+        me.subscriptions.push(him._id)
+        await me.save()
+        await him.save()
+        return [me, him]
+    }
+
+    async unsubscribe(from: Types.ObjectId, to: Types.ObjectId): Promise<UserDocument[]> {
+        const me = await this.getById(from)
+        if (!me)
+            throw new NotFoundException({message: `User with id ${from} not found`})
+        const him = await this.getById(to)
+        if (!him)
+            throw new NotFoundException({message: `User with id ${to} not found`})
+        him.followers = him.followers.filter(followerId => String(followerId) !== String(me._id))
+        me.subscriptions = me.subscriptions.filter(subscriptionId => String(subscriptionId) !== String(him._id))
+        await me.save()
+        await him.save()
+        return [me, him]
     }
 }

@@ -20,16 +20,16 @@ export class User {
     avatar: string
 
     @Prop([{ type: Types.ObjectId, ref: User.name }])
-    followers: User[]
+    followers: Types.ObjectId[]
 
     @Prop([{ type: Types.ObjectId, ref: User.name }])
-    subscriptions: User[]
+    subscriptions: Types.ObjectId[]
 
     @Prop([{ type: Types.ObjectId, ref: Image.name }])
-    favorites: Image[]
+    favorites: Types.ObjectId[]
 
     @Prop([{ type: Types.ObjectId, ref: Image.name }])
-    own: Image[]
+    own: Types.ObjectId[]
 
     @Prop({type: Types.ObjectId, ref: Role.name})
     role: Role
