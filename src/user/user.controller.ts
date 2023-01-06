@@ -5,7 +5,8 @@ import {
     Get,
     Param,
     Patch,
-    Post, UploadedFile,
+    Post,
+    UploadedFile,
     UseGuards,
     UseInterceptors,
     UsePipes,
@@ -21,8 +22,8 @@ import {JwtAuthGuard} from "../auth/guards/jwt-auth.guard";
 import {User} from "./decorators/user.decorator";
 import {Types} from "mongoose";
 import {FileInterceptor} from "@nestjs/platform-express";
-import {AuthService} from "../auth/auth.service";
 import {UpdatePasswordDto} from "./dto/update-password.dto";
+import {RoleType} from "../role/role.types";
 
 @Controller('users')
 @UsePipes(ValidationPipe)
@@ -88,6 +89,13 @@ export class UserController {
     @UseGuards(JwtAuthGuard)
     unsubscribe(@User('_id') id: Types.ObjectId, @Param() params: SearchParams) {
         return this.userService.unsubscribe(id, params.id)
+    }
+
+    @Post('/give-role/:id')
+    @Roles('admin')
+    @UseGuards(RolesGuard)
+    giveRole(@Param() params: SearchParams, @Body('roleValue') roleValue: RoleType) {
+        return this.userService.giveRole(params.id, roleValue)
     }
 
 }

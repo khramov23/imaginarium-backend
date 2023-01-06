@@ -7,6 +7,7 @@ import {Role, RoleDocument} from "../role/role.model";
 import {UpdateUserDto} from "./dto/update-user.dto";
 import * as bcrypt from 'bcryptjs'
 import {FileService} from "../file/file.service";
+import {RoleType} from "../role/role.types";
 
 @Injectable()
 export class UserService {
@@ -96,5 +97,20 @@ export class UserService {
         await me.save()
         await him.save()
         return [me, him]
+    }
+
+    async giveRole(id: Types.ObjectId, roleValue: RoleType): Promise<UserDocument> {
+        const role = await this.roleModel.findOne({value: roleValue})
+        if (!role) {
+            throw new NotFoundException(`Role with value = ${roleValue} not found`)
+        }
+        const user = await this.getById(id)
+        if (!user) {
+            throw  new NotFoundException(`User with id = ${id} not exists`)
+        }
+        user.role = role
+        await user.save()
+
+        return user
     }
 }
