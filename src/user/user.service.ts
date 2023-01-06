@@ -1,4 +1,4 @@
-import {Injectable, NotFoundException} from '@nestjs/common';
+import {BadRequestException, Injectable, NotFoundException} from '@nestjs/common';
 import {InjectModel} from "@nestjs/mongoose";
 import {Model, Types} from 'mongoose';
 import {User, UserDocument} from "./user.model";
@@ -36,8 +36,9 @@ export class UserService {
 
     async update(id: Types.ObjectId, dto: UpdateUserDto): Promise<UserDocument> {
         const resultDto = {}
+
         for (const [key, value] of Object.entries(dto))
-            if (key !== "role")
+            if (key !== "role" && key !== 'password')
                 resultDto[key] = value
 
         if (dto.roleValue) {
@@ -48,8 +49,13 @@ export class UserService {
             delete resultDto['roleValue']
         }
 
-        if (dto.password) {
-            resultDto['password'] = await bcrypt.hash(dto.password, 5)
+        if (dto.newPassword && dto.oldPassword) {
+            const user = await this.userModel.findById(id)
+            const passwordEquals = await bcrypt.compare(dto.oldPassword, user.password)
+            if (user && passwordEquals)
+                resultDto['password'] = await bcrypt.hash(dto.newPassword, 5)
+            else
+                throw new BadRequestException({message: "Incorrect old password"})
         }
         return this.userModel.findByIdAndUpdate(id, {...resultDto}, {new: true})
     }

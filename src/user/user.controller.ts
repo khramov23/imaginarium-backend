@@ -21,13 +21,16 @@ import {JwtAuthGuard} from "../auth/guards/jwt-auth.guard";
 import {User} from "./decorators/user.decorator";
 import {Types} from "mongoose";
 import {FileInterceptor} from "@nestjs/platform-express";
+import {AuthService} from "../auth/auth.service";
+import {UpdatePasswordDto} from "./dto/update-password.dto";
 
 @Controller('users')
 @UsePipes(ValidationPipe)
 export class UserController {
 
-    constructor(private readonly userService: UserService) {
-    }
+    constructor(
+        private readonly userService: UserService,
+    ) {}
 
     @Get()
     @UseGuards(JwtAuthGuard)
@@ -60,6 +63,12 @@ export class UserController {
     @UseGuards(RolesGuard)
     update(@Param() params: SearchParams, @Body() dto: UpdateUserDto) {
         return this.userService.update(params.id, dto)
+    }
+
+    @Post('/update-password')
+    @UseGuards(JwtAuthGuard)
+    updatePassword(@User('_id') id: Types.ObjectId, @Body() dto: UpdatePasswordDto) {
+        return this.userService.update(id, dto)
     }
 
     @Post('/add-avatar')
