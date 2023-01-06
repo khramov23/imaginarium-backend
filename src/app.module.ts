@@ -9,6 +9,8 @@ import { TagModule } from './tag/tag.module';
 import { ImageModule } from './image/image.module';
 import { FileModule } from './file/file.module';
 import { ColorsModule } from './colors/colors.module';
+import {ServeStaticModule} from "@nestjs/serve-static";
+import * as path from "path";
 
 @Module({
     imports: [
@@ -17,6 +19,9 @@ import { ColorsModule } from './colors/colors.module';
             imports: [ConfigModule],
             inject: [ConfigService],
             useFactory: getMongoConfig
+        }),
+        ServeStaticModule.forRoot({
+            rootPath: path.join(__dirname, "static")
         }),
         RoleModule,
         UserModule,
