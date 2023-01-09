@@ -19,11 +19,11 @@ export class UserService {
     ) {}
 
     async getAll(): Promise<UserDocument[]> {
-        return this.userModel.find()
+        return this.userModel.find().populate('role')
     }
 
     async getById(id: Types.ObjectId): Promise<UserDocument> {
-        return this.userModel.findById(id)
+        return this.userModel.findById(id).populate('role')
     }
 
     async getByEmail(email: string): Promise<UserDocument> {
@@ -31,11 +31,11 @@ export class UserService {
     }
 
     async getByUsername(username: string): Promise<UserDocument> {
-        return this.userModel.findOne({username})
+        return this.userModel.findOne({username}).populate('role')
     }
 
     async getByActivationLink(activationLink: string) {
-        return this.userModel.findOne({activationLink})
+        return this.userModel.findOne({activationLink}).populate('role')
     }
 
     async create(dto: CreateUserDto): Promise<UserDocument> {
@@ -114,7 +114,7 @@ export class UserService {
         }
         const user = await this.getById(id)
         if (!user) {
-            throw  new NotFoundException(`User with id = ${id} not exists`)
+            throw new NotFoundException(`User with id = ${id} not exists`)
         }
         user.role = role
         await user.save()
