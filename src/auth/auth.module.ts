@@ -4,17 +4,16 @@ import {AuthService} from './auth.service';
 import {UserModule} from "../user/user.module";
 import {JwtModule} from "@nestjs/jwt";
 import {ConfigModule} from "@nestjs/config";
+import {TokenModule} from "../token/token.module";
+import {MailModule} from "../mail/mail.module";
 
 @Module({
     imports: [
         ConfigModule.forRoot(),
         forwardRef(() => UserModule),
-        JwtModule.register({
-            secret: process.env.PRIVATE_KEY,
-            signOptions: {
-                expiresIn: '24h'
-            }
-        }),
+        JwtModule.register({}),
+        TokenModule,
+        MailModule
     ],
     controllers: [AuthController],
     providers: [AuthService],

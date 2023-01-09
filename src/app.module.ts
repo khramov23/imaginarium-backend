@@ -10,6 +10,8 @@ import { ImageModule } from './image/image.module';
 import { FileModule } from './file/file.module';
 import { ColorsModule } from './colors/colors.module';
 import {ServeStaticModule} from "@nestjs/serve-static";
+import { TokenModule } from './token/token.module';
+import { MailModule } from './mail/mail.module';
 import * as path from "path";
 
 @Module({
@@ -29,7 +31,9 @@ import * as path from "path";
         TagModule,
         ImageModule,
         FileModule,
-        ColorsModule
+        ColorsModule,
+        TokenModule,
+        MailModule
     ],
 })
 export class AppModule {

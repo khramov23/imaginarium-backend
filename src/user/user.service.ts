@@ -27,7 +27,15 @@ export class UserService {
     }
 
     async getByEmail(email: string): Promise<UserDocument> {
-        return this.userModel.findOne({email})
+        return this.userModel.findOne({email}).populate('role')
+    }
+
+    async getByUsername(username: string): Promise<UserDocument> {
+        return this.userModel.findOne({username})
+    }
+
+    async getByActivationLink(activationLink: string) {
+        return this.userModel.findOne({activationLink})
     }
 
     async create(dto: CreateUserDto): Promise<UserDocument> {
@@ -113,4 +121,6 @@ export class UserService {
 
         return user
     }
+
+
 }

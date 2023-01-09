@@ -92,9 +92,9 @@ export class UserController {
     }
 
     @Post('/give-role/:id')
-    @Roles('admin')
-    @UseGuards(RolesGuard)
-    giveRole(@Param() params: SearchParams, @Body('roleValue') roleValue: RoleType) {
+    // @Roles('admin')
+    // @UseGuards(RolesGuard)
+    giveRole(@Param() params:  SearchParams, @Body('roleValue') roleValue: RoleType) {
         return this.userService.giveRole(params.id, roleValue)
     }
 

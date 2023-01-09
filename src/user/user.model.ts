@@ -13,7 +13,13 @@ export class User {
     @Prop({ unique: true })
     email: string;
 
+    @Prop({default: false})
+    isActivated: boolean
+
     @Prop()
+    activationLink: string
+
+    @Prop({ required: true })
     password: string
 
     @Prop()
