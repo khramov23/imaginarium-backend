@@ -8,31 +8,37 @@ import {RolesGuard} from "../auth/guards/roles.guard";
 @Controller('tags')
 export class TagController {
 
-  constructor(private readonly tagService: TagService) {}
+    constructor(private readonly tagService: TagService) {
+    }
 
-  @Get()
-  getAll() {
-    return this.tagService.getAll()
-  }
+    @Get()
+    getAll() {
+        return this.tagService.getAll()
+    }
 
-  @Delete()
-  @Roles('admin')
-  @UseGuards(RolesGuard)
-  deleteAll() {
-    return this.tagService.deleteAll()
-  }
+    @Get("/popular")
+    getPopular() {
+        return this.tagService.getPopular()
+    }
 
-  @Post()
-  @Roles('admin')
-  @UseGuards(RolesGuard)
-  create(@Body() dto: CreateTagDto) {
-    return this.tagService.create(dto)
-  }
+    @Delete()
+    @Roles('admin')
+    @UseGuards(RolesGuard)
+    deleteAll() {
+        return this.tagService.deleteAll()
+    }
 
-  @Delete(':id')
-  @Roles('admin')
-  @UseGuards(RolesGuard)
-  delete(@Param() params: SearchParams) {
-    return this.tagService.delete(params.id)
-  }
+    @Post()
+    @Roles('admin')
+    @UseGuards(RolesGuard)
+    create(@Body() dto: CreateTagDto) {
+        return this.tagService.create(dto)
+    }
+
+    @Delete(':id')
+    @Roles('admin')
+    @UseGuards(RolesGuard)
+    delete(@Param() params: SearchParams) {
+        return this.tagService.delete(params.id)
+    }
 }

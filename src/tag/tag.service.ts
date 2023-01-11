@@ -1,4 +1,4 @@
-import {BadRequestException, Injectable, NotFoundException} from '@nestjs/common';
+import {Injectable, NotFoundException} from '@nestjs/common';
 import {InjectModel} from "@nestjs/mongoose";
 import {Model, Types} from 'mongoose';
 import {Tag, TagDocument} from "./tag.model";
@@ -12,6 +12,13 @@ export class TagService {
 
     async getAll(): Promise<TagDocument[]> {
         return this.tagModel.find()
+    }
+
+    async getPopular() {
+        return this.tagModel.aggregate([
+            { "$sort": { "count": -1 } },
+            { "$limit": 4 }
+        ])
     }
 
     async deleteAll() {
@@ -49,4 +56,6 @@ export class TagService {
         }
         return tag
     }
+
+
 }
