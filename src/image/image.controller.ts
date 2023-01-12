@@ -23,6 +23,16 @@ export class ImageController {
         return this.imageService.getOneByTag(tagValue)
     }
 
+    @Get("/favorites/:id")
+    getFavoritesByUserId(@Param() params: SearchParams) {
+        return this.imageService.getFavoritesByUserId(params.id)
+    }
+
+    @Get("/own/:id")
+    getOwnByUserId(@Param() params: SearchParams) {
+        return this.imageService.getOwnByUserId(params.id)
+    }
+
     @Delete()
     @Roles('admin')
     @UseGuards(RolesGuard)

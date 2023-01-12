@@ -14,7 +14,7 @@ import {FileModule} from "../file/file.module";
             {name: Role.name, schema: RoleSchema}
         ]),
         forwardRef(() => AuthModule),
-        FileModule
+        FileModule,
     ],
     controllers: [UserController],
     providers: [UserService],

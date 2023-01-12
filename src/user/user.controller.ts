@@ -51,6 +51,15 @@ export class UserController {
         return this.userService.getManyByUsername(username)
     }
 
+    @Get("/subscriptions/:id")
+    getSubscriptions(@Param() params: SearchParams) {
+        return this.userService.getSubscriptions(params.id)
+    }
+
+    @Get("/followers/:id")
+    getFollowers(@Param() params: SearchParams) {
+        return this.userService.getFollowers(params.id)
+    }
 
     @Post()
     @Roles('admin')

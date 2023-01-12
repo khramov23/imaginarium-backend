@@ -31,6 +31,15 @@ export class ImageService {
         return this.imageModel.findOne({tags: tag._id})
     }
 
+    async getFavoritesByUserId(userId: Types.ObjectId): Promise<ImageDocument[]> {
+        const user = await this.userService.getById(userId)
+        return this.imageModel.find({ '_id': { $in: user.favorites } });
+    }
+
+    async getOwnByUserId(userId: Types.ObjectId): Promise<ImageDocument[]> {
+        const user = await this.userService.getById(userId)
+        return this.imageModel.find({ '_id': { $in: user.own } });
+    }
 
     async deleteAll() {
         await this.tagService.deleteAll()

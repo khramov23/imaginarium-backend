@@ -44,6 +44,16 @@ export class UserService {
         ])
     }
 
+    async getSubscriptions(id: Types.ObjectId): Promise<UserDocument[]> {
+        const user = await this.userModel.findById(id)
+        return this.userModel.find({ '_id': { $in: user.subscriptions } });
+    }
+
+    async getFollowers(id: Types.ObjectId): Promise<UserDocument[]> {
+        const user = await this.userModel.findById(id)
+        return this.userModel.find({ '_id': { $in: user.followers } });
+    }
+
     async create(dto: CreateUserDto): Promise<UserDocument> {
         const role = await this.roleModel.findOne({value: "user"})
         return this.userModel.create({...dto, role})
@@ -127,6 +137,7 @@ export class UserService {
 
         return user
     }
+
 
 
 }
