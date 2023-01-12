@@ -38,6 +38,12 @@ export class UserService {
         return this.userModel.findOne({activationLink}).populate('role')
     }
 
+    async getManyByUsername(username: string) {
+        return this.userModel.aggregate([
+            {$match: {'username': new RegExp(username, 'gi')}}
+        ])
+    }
+
     async create(dto: CreateUserDto): Promise<UserDocument> {
         const role = await this.roleModel.findOne({value: "user"})
         return this.userModel.create({...dto, role})

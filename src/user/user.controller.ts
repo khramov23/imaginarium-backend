@@ -45,6 +45,13 @@ export class UserController {
         return this.userService.getById(params.id)
     }
 
+    @Get('/by-username/:username')
+    @UseGuards(JwtAuthGuard)
+    getManyByUsername(@Param('username') username: string) {
+        return this.userService.getManyByUsername(username)
+    }
+
+
     @Post()
     @Roles('admin')
     @UseGuards(RolesGuard)
@@ -97,5 +104,7 @@ export class UserController {
     giveRole(@Param() params:  SearchParams, @Body('roleValue') roleValue: RoleType) {
         return this.userService.giveRole(params.id, roleValue)
     }
+
+
 
 }
