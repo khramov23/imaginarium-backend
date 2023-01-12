@@ -7,6 +7,7 @@ import {User} from "../user/decorators/user.decorator";
 import {JwtAuthGuard} from "../auth/guards/jwt-auth.guard";
 import {Roles} from "../auth/decorators/roles.decorator";
 import {RolesGuard} from "../auth/guards/roles.guard";
+import {ColorName} from "../colors/colors.types";
 
 @Controller('images')
 export class ImageController {
@@ -23,6 +24,11 @@ export class ImageController {
         return this.imageService.getOneByTag(tagValue)
     }
 
+    @Get('/many-by-tag/:tagValue')
+    getManyByTag(@Param('tagValue') tagValue: string) {
+        return this.imageService.getManyByTag(tagValue)
+    }
+
     @Get("/favorites/:id")
     getFavoritesByUserId(@Param() params: SearchParams) {
         return this.imageService.getFavoritesByUserId(params.id)
@@ -31,6 +37,16 @@ export class ImageController {
     @Get("/own/:id")
     getOwnByUserId(@Param() params: SearchParams) {
         return this.imageService.getOwnByUserId(params.id)
+    }
+
+    @Get('/by-title/:title')
+    getByTitle(@Param("title") title: string) {
+        return this.imageService.getByTitle(title)
+    }
+
+    @Get('/by-color/:color')
+    getByColor(@Param("color") color: ColorName) {
+        return this.imageService.getByColor(color)
     }
 
     @Delete()

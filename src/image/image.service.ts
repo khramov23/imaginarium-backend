@@ -7,6 +7,7 @@ import {FileService} from "../file/file.service";
 import {TagService} from "../tag/tag.service";
 import {ColorsService} from "../colors/colors.service";
 import {UserService} from "../user/user.service";
+import {ColorName} from "../colors/colors.types";
 
 @Injectable()
 export class ImageService {
@@ -24,12 +25,7 @@ export class ImageService {
         return this.imageModel.find()
     }
 
-    async getOneByTag(tagValue: string): Promise<ImageDocument> {
-        const tag = await this.tagService.getByTagValue(tagValue)
-        if (!tag)
-            throw new BadRequestException({message: "There is not tag with value " + tagValue})
-        return this.imageModel.findOne({tags: tag._id})
-    }
+
 
     async getFavoritesByUserId(userId: Types.ObjectId): Promise<ImageDocument[]> {
         const user = await this.userService.getById(userId)
@@ -39,6 +35,32 @@ export class ImageService {
     async getOwnByUserId(userId: Types.ObjectId): Promise<ImageDocument[]> {
         const user = await this.userService.getById(userId)
         return this.imageModel.find({ '_id': { $in: user.own } });
+    }
+
+    async getOneByTag(tagValue: string): Promise<ImageDocument> {
+        const tag = await this.tagService.getByTagValue(tagValue)
+        if (!tag)
+            throw new BadRequestException({message: "There is not tag with value " + tagValue})
+        return this.imageModel.findOne({tags: tag._id})
+    }
+
+    async getManyByTag(tagValue: string): Promise<ImageDocument[]> {
+        const tag = await this.tagService.getByTagValue(tagValue)
+        if (!tag)
+            throw new BadRequestException({message: "There is not tag with value " + tagValue})
+        return this.imageModel.find({tags: tag._id})
+    }
+
+    async getByTitle(title: string) {
+        return this.imageModel.aggregate([
+            {$match: {"title": new RegExp(title, 'gi')}}
+        ])
+    }
+
+    async getByColor(color: ColorName) {
+        return this.imageModel.aggregate([
+            {$match: { [`colors.${color}`]: {$gte: 30}}}
+        ])
     }
 
     async deleteAll() {
@@ -104,6 +126,7 @@ export class ImageService {
 
         return image
     }
+
 
 
 }
