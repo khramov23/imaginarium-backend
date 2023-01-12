@@ -1,4 +1,4 @@
-import {Injectable, NotFoundException} from '@nestjs/common';
+import {BadRequestException, Injectable, NotFoundException} from '@nestjs/common';
 import {InjectModel} from "@nestjs/mongoose";
 import {Image, ImageDocument} from "./models/image.model";
 import {Model, Types} from "mongoose";
@@ -17,11 +17,20 @@ export class ImageService {
         private readonly tagService: TagService,
         private readonly fileService: FileService,
         private readonly colorsService: ColorsService
-    ) {}
+    ) {
+    }
 
     async getAll(): Promise<ImageDocument[]> {
         return this.imageModel.find()
     }
+
+    async getOneByTag(tagValue: string): Promise<ImageDocument> {
+        const tag = await this.tagService.getByTagValue(tagValue)
+        if (!tag)
+            throw new BadRequestException({message: "There is not tag with value " + tagValue})
+        return this.imageModel.findOne({tags: tag._id})
+    }
+
 
     async deleteAll() {
         await this.tagService.deleteAll()
@@ -30,7 +39,7 @@ export class ImageService {
 
     async create(userId: Types.ObjectId, dto: CreateImageDto, image: Express.Multer.File): Promise<ImageDocument> {
         const src = await this.fileService.createFile(image)
-        const user  = await this.userService.getById(userId)
+        const user = await this.userService.getById(userId)
         if (!user) {
             throw new NotFoundException({message: "User with this Id not found"})
         }
@@ -86,4 +95,6 @@ export class ImageService {
 
         return image
     }
+
+
 }

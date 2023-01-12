@@ -18,6 +18,11 @@ export class ImageController {
         return this.imageService.getAll()
     }
 
+    @Get('/by-tag/:tagValue')
+    getOneByTag(@Param('tagValue') tagValue: string) {
+        return this.imageService.getOneByTag(tagValue)
+    }
+
     @Delete()
     @Roles('admin')
     @UseGuards(RolesGuard)

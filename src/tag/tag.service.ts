@@ -21,6 +21,10 @@ export class TagService {
         ])
     }
 
+    async getByTagValue(tagValue: string) {
+        return this.tagModel.findOne({value: tagValue})
+    }
+
     async deleteAll() {
         return this.tagModel.deleteMany()
     }
@@ -56,6 +60,7 @@ export class TagService {
         }
         return tag
     }
+
 
 
 }
