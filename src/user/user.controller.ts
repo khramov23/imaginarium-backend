@@ -5,7 +5,7 @@ import {
     Get,
     Param,
     Patch,
-    Post,
+    Post, Query,
     UploadedFile,
     UseGuards,
     UseInterceptors,
@@ -24,6 +24,7 @@ import {Types} from "mongoose";
 import {FileInterceptor} from "@nestjs/platform-express";
 import {UpdatePasswordDto} from "./dto/update-password.dto";
 import {RoleType} from "../role/role.types";
+import {PaginationParams} from "../validators/pagination.validator";
 
 @Controller('users')
 @UsePipes(ValidationPipe)
@@ -35,8 +36,8 @@ export class UserController {
 
     @Get()
     @UseGuards(JwtAuthGuard)
-    getAll() {
-        return this.userService.getAll()
+    getAll(@Query() query: PaginationParams) {
+        return this.userService.getAll(query)
     }
 
     @Get(':id')
@@ -47,18 +48,18 @@ export class UserController {
 
     @Get('/by-username/:username')
     @UseGuards(JwtAuthGuard)
-    getManyByUsername(@Param('username') username: string) {
-        return this.userService.getManyByUsername(username)
+    getManyByUsername(@Param('username') username: string, @Query() query: PaginationParams) {
+        return this.userService.getManyByUsername(username, query)
     }
 
     @Get("/subscriptions/:id")
-    getSubscriptions(@Param() params: SearchParams) {
-        return this.userService.getSubscriptions(params.id)
+    getSubscriptions(@Param() params: SearchParams, @Query() query: PaginationParams) {
+        return this.userService.getSubscriptions(params.id, query)
     }
 
     @Get("/followers/:id")
-    getFollowers(@Param() params: SearchParams) {
-        return this.userService.getFollowers(params.id)
+    getFollowers(@Param() params: SearchParams, @Query() query: PaginationParams) {
+        return this.userService.getFollowers(params.id, query)
     }
 
     @Post()

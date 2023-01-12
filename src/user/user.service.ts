@@ -8,6 +8,7 @@ import {UpdateUserDto} from "./dto/update-user.dto";
 import * as bcrypt from 'bcryptjs'
 import {FileService} from "../file/file.service";
 import {RoleType} from "../role/role.types";
+import {PaginationParams} from "../validators/pagination.validator";
 
 @Injectable()
 export class UserService {
@@ -18,8 +19,8 @@ export class UserService {
         private readonly fileService: FileService
     ) {}
 
-    async getAll(): Promise<UserDocument[]> {
-        return this.userModel.find().populate('role')
+    async getAll({limit = 100, page = 0}: PaginationParams): Promise<UserDocument[]> {
+        return this.userModel.find().populate('role').skip(+page * +limit).limit(limit)
     }
 
     async getById(id: Types.ObjectId): Promise<UserDocument> {
@@ -38,20 +39,20 @@ export class UserService {
         return this.userModel.findOne({activationLink}).populate('role')
     }
 
-    async getManyByUsername(username: string) {
+    async getManyByUsername(username: string, {limit = 100, page = 0}: PaginationParams) {
         return this.userModel.aggregate([
             {$match: {'username': new RegExp(username, 'gi')}}
-        ])
+        ]).skip(+page * +limit).limit(+limit)
     }
 
-    async getSubscriptions(id: Types.ObjectId): Promise<UserDocument[]> {
+    async getSubscriptions(id: Types.ObjectId, {limit = 100, page = 0}: PaginationParams): Promise<UserDocument[]> {
         const user = await this.userModel.findById(id)
-        return this.userModel.find({ '_id': { $in: user.subscriptions } });
+        return this.userModel.find({ '_id': { $in: user.subscriptions } }).skip(+page * +limit).limit(+limit);
     }
 
-    async getFollowers(id: Types.ObjectId): Promise<UserDocument[]> {
+    async getFollowers(id: Types.ObjectId, {limit = 100, page = 0}: PaginationParams): Promise<UserDocument[]> {
         const user = await this.userModel.findById(id)
-        return this.userModel.find({ '_id': { $in: user.followers } });
+        return this.userModel.find({ '_id': { $in: user.followers } }).skip(+page * +limit).limit(+limit);
     }
 
     async create(dto: CreateUserDto): Promise<UserDocument> {
