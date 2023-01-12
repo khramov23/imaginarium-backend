@@ -8,6 +8,7 @@ import {TagService} from "../tag/tag.service";
 import {ColorsService} from "../colors/colors.service";
 import {UserService} from "../user/user.service";
 import {ColorName} from "../colors/colors.types";
+import {PaginationParams} from "../validators/pagination.validator";
 
 @Injectable()
 export class ImageService {
@@ -21,20 +22,18 @@ export class ImageService {
     ) {
     }
 
-    async getAll(): Promise<ImageDocument[]> {
-        return this.imageModel.find()
+    async getAll({limit = 100, page = 0}: PaginationParams): Promise<ImageDocument[]> {
+        return this.imageModel.find().skip(+page * +limit).limit(+limit)
     }
 
-
-
-    async getFavoritesByUserId(userId: Types.ObjectId): Promise<ImageDocument[]> {
+    async getFavoritesByUserId(userId: Types.ObjectId, {limit = 100, page = 0}: PaginationParams): Promise<ImageDocument[]> {
         const user = await this.userService.getById(userId)
-        return this.imageModel.find({ '_id': { $in: user.favorites } });
+        return this.imageModel.find({ '_id': { $in: user.favorites } }).skip(+page * +limit).limit(+limit)
     }
 
-    async getOwnByUserId(userId: Types.ObjectId): Promise<ImageDocument[]> {
+    async getOwnByUserId(userId: Types.ObjectId, {limit = 100, page = 0}: PaginationParams): Promise<ImageDocument[]> {
         const user = await this.userService.getById(userId)
-        return this.imageModel.find({ '_id': { $in: user.own } });
+        return this.imageModel.find({ '_id': { $in: user.own } }).skip(+page * +limit).limit(+limit)
     }
 
     async getOneByTag(tagValue: string): Promise<ImageDocument> {
@@ -44,23 +43,23 @@ export class ImageService {
         return this.imageModel.findOne({tags: tag._id})
     }
 
-    async getManyByTag(tagValue: string): Promise<ImageDocument[]> {
+    async getManyByTag(tagValue: string, {limit = 100, page = 0}: PaginationParams): Promise<ImageDocument[]> {
         const tag = await this.tagService.getByTagValue(tagValue)
         if (!tag)
             throw new BadRequestException({message: "There is not tag with value " + tagValue})
-        return this.imageModel.find({tags: tag._id})
+        return this.imageModel.find({tags: tag._id}).skip(+page * +limit).limit(+limit)
     }
 
-    async getByTitle(title: string) {
+    async getByTitle(title: string, {limit = 100, page = 0}: PaginationParams) {
         return this.imageModel.aggregate([
-            {$match: {"title": new RegExp(title, 'gi')}}
-        ])
+            {$match: {"title": new RegExp(title, 'gi')}},
+        ]).skip(+page * +limit).limit(+limit)
     }
 
-    async getByColor(color: ColorName) {
+    async getByColor(color: ColorName, {limit = 100, page = 0}: PaginationParams) {
         return this.imageModel.aggregate([
             {$match: { [`colors.${color}`]: {$gte: 30}}}
-        ])
+        ]).skip(+page * +limit).limit(+limit)
     }
 
     async deleteAll() {

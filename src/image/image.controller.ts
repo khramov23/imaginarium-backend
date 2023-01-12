@@ -1,4 +1,15 @@
-import {Body, Controller, Delete, Get, Param, Post, UploadedFile, UseGuards, UseInterceptors} from '@nestjs/common';
+import {
+    Body,
+    Controller,
+    Delete,
+    Get,
+    Param,
+    Post,
+    Query,
+    UploadedFile,
+    UseGuards,
+    UseInterceptors
+} from '@nestjs/common';
 import {ImageService} from "./image.service";
 import {CreateImageDto} from "./dto/create-image.dto";
 import {SearchParams} from "../validators/param.validator";
@@ -8,6 +19,7 @@ import {JwtAuthGuard} from "../auth/guards/jwt-auth.guard";
 import {Roles} from "../auth/decorators/roles.decorator";
 import {RolesGuard} from "../auth/guards/roles.guard";
 import {ColorName} from "../colors/colors.types";
+import {PaginationParams} from "../validators/pagination.validator";
 
 @Controller('images')
 export class ImageController {
@@ -15,8 +27,8 @@ export class ImageController {
     constructor(private readonly imageService: ImageService) {}
 
     @Get()
-    getAll() {
-        return this.imageService.getAll()
+    getAll(@Query() query: PaginationParams) {
+        return this.imageService.getAll(query)
     }
 
     @Get('/by-tag/:tagValue')
@@ -25,28 +37,28 @@ export class ImageController {
     }
 
     @Get('/many-by-tag/:tagValue')
-    getManyByTag(@Param('tagValue') tagValue: string) {
-        return this.imageService.getManyByTag(tagValue)
+    getManyByTag(@Param('tagValue') tagValue: string, @Query() query: PaginationParams) {
+        return this.imageService.getManyByTag(tagValue, query)
     }
 
     @Get("/favorites/:id")
-    getFavoritesByUserId(@Param() params: SearchParams) {
-        return this.imageService.getFavoritesByUserId(params.id)
+    getFavoritesByUserId(@Param() params: SearchParams, @Query() query: PaginationParams) {
+        return this.imageService.getFavoritesByUserId(params.id, query)
     }
 
     @Get("/own/:id")
-    getOwnByUserId(@Param() params: SearchParams) {
-        return this.imageService.getOwnByUserId(params.id)
+    getOwnByUserId(@Param() params: SearchParams, @Query() query: PaginationParams) {
+        return this.imageService.getOwnByUserId(params.id, query)
     }
 
     @Get('/by-title/:title')
-    getByTitle(@Param("title") title: string) {
-        return this.imageService.getByTitle(title)
+    getByTitle(@Param("title") title: string, @Query() query: PaginationParams) {
+        return this.imageService.getByTitle(title, query)
     }
 
     @Get('/by-color/:color')
-    getByColor(@Param("color") color: ColorName) {
-        return this.imageService.getByColor(color)
+    getByColor(@Param("color") color: ColorName, @Query() query: PaginationParams) {
+        return this.imageService.getByColor(color, query)
     }
 
     @Delete()
