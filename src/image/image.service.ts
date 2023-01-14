@@ -9,6 +9,7 @@ import {ColorsService} from "../colors/colors.service";
 import {UserService} from "../user/user.service";
 import {ColorName} from "../colors/colors.types";
 import {PaginationParams} from "../validators/pagination.validator";
+import {Tag} from "../tag/tag.model";
 
 @Injectable()
 export class ImageService {
@@ -36,10 +37,23 @@ export class ImageService {
         return this.imageModel.find({ '_id': { $in: user.own } }).skip(+page * +limit).limit(+limit)
     }
 
-    async getOneByTag(tagValue: string): Promise<ImageDocument> {
+    async getOneByTag(tagValue: string) {
         const tag = await this.tagService.getByTagValue(tagValue)
         if (!tag)
             throw new BadRequestException({message: "There is not tag with value " + tagValue})
+        // return this.imageModel.findOne({tags: tag._id})
+        return this.imageModel.aggregate([
+            {$match: {"tags": tag._id}},
+            {$addFields: {"tag": tag.value}},
+            {$sort: {'likes': -1}},
+            {$limit: 1},
+        ])
+    }
+
+    async getOneByTagId(id: Types.ObjectId): Promise<ImageDocument> {
+        const tag = await this.tagService.getById(id)
+        if (!tag)
+            throw new BadRequestException({message: "There is not tag with value " + tag.value})
         return this.imageModel.findOne({tags: tag._id})
     }
 
@@ -60,6 +74,16 @@ export class ImageService {
         return this.imageModel.aggregate([
             {$match: { [`colors.${color}`]: {$gte: 30}}}
         ]).skip(+page * +limit).limit(+limit)
+    }
+
+    async getByPopularTags() {
+        const tags = await this.tagService.getPopular()
+        const tagValues = tags.map(tag => tag.value)
+        const images = []
+        for (const value of tagValues) {
+            images.push(await this.getOneByTag(value))
+        }
+        return images
     }
 
     async deleteAll() {

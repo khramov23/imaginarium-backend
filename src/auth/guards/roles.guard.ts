@@ -27,17 +27,26 @@ export class RolesGuard implements CanActivate {
             ])
             if (!requiredRoles)
                 return true
+
             const authHeader = req.headers.authorization
             const authHeaderSplit = authHeader.split(' ')
             const bearer = authHeaderSplit[0]
             const token = authHeaderSplit[1]
             if (bearer !== "Bearer" || !token) {
+
                 throw new UnauthorizedException({message: "User is not signed"})
             }
-            const user = this.jwtService.verify(token)
-            req.user = user
 
-            return requiredRoles.includes(user.role)
+            const userData = this.jwtService.verify(token, {
+                secret: process.env.JWT_ACCESS
+            })
+            if (!userData) {
+                throw new UnauthorizedException({message: "Invalid access token"})
+            }
+
+            req.user = userData
+
+            return requiredRoles.includes(userData.role)
         } catch (e) {
             throw new HttpException('Not accepted', HttpStatus.FORBIDDEN)
         }

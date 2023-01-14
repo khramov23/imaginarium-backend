@@ -1,4 +1,4 @@
-import {Module} from '@nestjs/common';
+import {forwardRef, Module} from '@nestjs/common';
 import {ImageController} from './image.controller';
 import {ImageService} from './image.service';
 import {MongooseModule} from "@nestjs/mongoose";
@@ -16,7 +16,7 @@ import {AuthModule} from "../auth/auth.module";
         ]),
         FileModule,
         UserModule,
-        TagModule,
+        forwardRef(() => TagModule),
         ColorsModule,
         AuthModule
     ],

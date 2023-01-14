@@ -87,7 +87,7 @@ export class AuthService {
 
     async refresh(refreshToken: string): Promise<UserInfoWithTokens> {
         if (!refreshToken) {
-            throw new UnauthorizedException({message: "Authorization error"})
+            throw new UnauthorizedException({message: "No refresh token error"})
         }
         const userData = await this.tokenService.validateRefreshToken(refreshToken)
         const tokenFromDb = await this.tokenService.findToken(refreshToken)

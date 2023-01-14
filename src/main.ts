@@ -10,6 +10,9 @@ async function bootstrap() {
       new ValidationPipe(),
   );
   app.use(cookieParser())
+  app.enableCors({
+    credentials: true,
+  })
   await app.listen(PORT, () => console.log("server started on PORT " + PORT));
 }
 bootstrap();

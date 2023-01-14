@@ -7,8 +7,9 @@ import {CreateTagDto} from "./dto/create-tag.dto";
 @Injectable()
 export class TagService {
 
-    constructor(@InjectModel(Tag.name) private tagModel: Model<TagDocument>) {
-    }
+    constructor(
+        @InjectModel(Tag.name) private tagModel: Model<TagDocument>,
+    ) {}
 
     async getAll(): Promise<TagDocument[]> {
         return this.tagModel.find()
@@ -19,6 +20,10 @@ export class TagService {
             { "$sort": { "count": -1 } },
             { "$limit": 4 }
         ])
+    }
+
+    async getById(id: Types.ObjectId) {
+        return this.tagModel.findById(id)
     }
 
     async getByTagValue(tagValue: string) {

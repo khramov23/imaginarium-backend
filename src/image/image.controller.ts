@@ -20,6 +20,7 @@ import {Roles} from "../auth/decorators/roles.decorator";
 import {RolesGuard} from "../auth/guards/roles.guard";
 import {ColorName} from "../colors/colors.types";
 import {PaginationParams} from "../validators/pagination.validator";
+import {Types} from "mongoose";
 
 @Controller('images')
 export class ImageController {
@@ -31,9 +32,20 @@ export class ImageController {
         return this.imageService.getAll(query)
     }
 
+
+    @Get('/by-tags')
+    getByPopularTags() {
+        return this.imageService.getByPopularTags()
+    }
+
     @Get('/by-tag/:tagValue')
     getOneByTag(@Param('tagValue') tagValue: string) {
         return this.imageService.getOneByTag(tagValue)
+    }
+
+    @Get('/by-tag-id/:id')
+    getOneByTagId(@Param() params: SearchParams) {
+        return this.imageService.getOneByTagId(params.id)
     }
 
     @Get('/many-by-tag/:tagValue')
@@ -60,6 +72,7 @@ export class ImageController {
     getByColor(@Param("color") color: ColorName, @Query() query: PaginationParams) {
         return this.imageService.getByColor(color, query)
     }
+
 
     @Delete()
     @Roles('admin')
