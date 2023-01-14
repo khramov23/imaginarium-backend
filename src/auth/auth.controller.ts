@@ -36,11 +36,11 @@ export class AuthController {
         return response.status(200).json({message: "Logged out"})
     }
 
-    @Post('/refresh')
+    @Get('/refresh')
     async refresh(@Req() request: Request, @Res() response: Response): Promise<Response> {
         const {refreshToken} = request.cookies
         const userData = await this.authService.refresh(refreshToken)
-        response.cookie('refreshToken', refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true})
+        response.cookie('refreshToken', userData.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true})
         return response.status(200).json(userData)
     }
 
