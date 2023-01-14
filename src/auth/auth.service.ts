@@ -8,6 +8,7 @@ import {TokenService} from "../token/token.service";
 import {UserInfoWithTokens} from "./types/user-info.type";
 import {MailService} from "../mail/mail.service";
 import {UserDocument} from "../user/user.model";
+import {UserResponse} from "./dto/user-response.dto";
 
 @Injectable()
 export class AuthService {
@@ -24,8 +25,10 @@ export class AuthService {
         const tokens = this.tokenService.generateTokens(user)
         await this.tokenService.saveToken(user._id, tokens.refreshToken)
 
+        const userResponse = new UserResponse(user)
+
         return {
-            _id: user.id, role: user.role, isActivated: user.isActivated,
+            user: userResponse,
             ...tokens
         }
     }
@@ -54,10 +57,10 @@ export class AuthService {
         const tokens = this.tokenService.generateTokens(user)
         await this.tokenService.saveToken(user._id, tokens.refreshToken)
 
+        const userResponse = new UserResponse(user)
+
         return {
-            _id: user._id,
-            role: user.role,
-            isActivated: user.isActivated,
+            user: userResponse,
             ...tokens
         }
     }
@@ -99,10 +102,10 @@ export class AuthService {
         const tokens = this.tokenService.generateTokens(user)
         await this.tokenService.saveToken(user._id, tokens.refreshToken)
 
+        const userResponse = new UserResponse(user)
+
         return {
-            _id: user._id,
-            role: user.role,
-            isActivated: user.isActivated,
+            user: userResponse,
             ...tokens
         }
     }

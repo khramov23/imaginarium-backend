@@ -1,11 +1,14 @@
-import {Tokens} from "../../token/token.type";
+import { RoleType } from '../../role/role.types';
+import { Tokens } from '../../token/token.type';
+import { UserResponse } from '../dto/user-response.dto';
 import {Types} from "mongoose";
-import {Role, RoleDocument} from "../../role/role.model";
 
 export interface UserInfo {
-    _id: Types.ObjectId
-    role: Role | RoleDocument
-    isActivated: boolean
+  _id: Types.ObjectId;
+  isActivated: string;
+  role: RoleType;
 }
 
-export type UserInfoWithTokens = UserInfo | Tokens
+export interface UserInfoWithTokens extends Tokens {
+  user: UserResponse;
+}
