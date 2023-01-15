@@ -11,6 +11,7 @@ export class UserResponse {
     subscriptions: Types.ObjectId[]
     favorites: Types.ObjectId[]
     own: Types.ObjectId[]
+    avatar: string
 
     constructor(user: UserDocument) {
         this._id = user._id
@@ -21,6 +22,7 @@ export class UserResponse {
         this.subscriptions = user.subscriptions
         this.favorites = user.favorites
         this.own = user.own
+        this.avatar = user.avatar
     }
 
 }
