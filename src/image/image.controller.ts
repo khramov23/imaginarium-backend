@@ -32,6 +32,10 @@ export class ImageController {
         return this.imageService.getAll(query)
     }
 
+    @Get('/:id')
+    getById(@Param() params: SearchParams) {
+        return this.imageService.getById(params.id)
+    }
 
     @Get('/by-tags')
     getByPopularTags() {

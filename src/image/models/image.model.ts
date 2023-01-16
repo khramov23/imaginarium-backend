@@ -3,6 +3,7 @@ import {HydratedDocument, Types} from 'mongoose';
 import {User} from "../../user/user.model";
 import {Colors} from "../../colors/colors.model";
 import {Tag} from "../../tag/tag.model";
+import * as mongoose from "mongoose";
 
 export type ImageDocument = HydratedDocument<Image>;
 
@@ -29,7 +30,7 @@ export class Image {
     @Prop()
     likes: number
 
-    @Prop([{ type: Types.ObjectId, ref: Tag.name }])
+    @Prop([{ type: mongoose.Schema.Types.ObjectId, ref: Tag.name }])
     tags: Tag[]
 }
 
