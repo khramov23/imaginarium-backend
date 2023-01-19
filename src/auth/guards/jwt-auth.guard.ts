@@ -26,7 +26,6 @@ export class JwtAuthGuard implements CanActivate {
             if (!userData) {
                 throw new UnauthorizedException({message: "Invalid access token"})
             }
-            console.log(userData)
             req.user = userData
             return true
         } catch (e) {

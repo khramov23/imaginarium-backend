@@ -108,33 +108,29 @@ export class UserService {
         return user
     }
 
-    async subscribe(from: Types.ObjectId, to: Types.ObjectId): Promise<UserDocument[]> {
+    async subscribe(from: Types.ObjectId, to: Types.ObjectId): Promise<UserResponse[]> {
         const me = await this.getById(from)
         if (!me)
             throw new NotFoundException({message: `User with id ${from} not found`})
         const him = await this.getById(to)
         if (!him)
             throw new NotFoundException({message: `User with id ${to} not found`})
-        him.followers.push(me._id)
-        me.subscriptions.push(him._id)
+
+        if (him.followers.includes(me._id))
+            him.followers = him.followers.filter(follower => String(follower._id) !== String(me._id))
+        else
+            him.followers.push(me._id)
+
+        if (me.subscriptions.includes(him._id))
+            me.subscriptions = me.subscriptions.filter(subs => String(subs._id) !== String(him._id))
+        else
+            me.subscriptions.push(him._id)
+
         await me.save()
         await him.save()
-        return [me, him]
+        return [me, him].map(user => new UserResponse(user))
     }
 
-    async unsubscribe(from: Types.ObjectId, to: Types.ObjectId): Promise<UserDocument[]> {
-        const me = await this.getById(from)
-        if (!me)
-            throw new NotFoundException({message: `User with id ${from} not found`})
-        const him = await this.getById(to)
-        if (!him)
-            throw new NotFoundException({message: `User with id ${to} not found`})
-        him.followers = him.followers.filter(followerId => String(followerId) !== String(me._id))
-        me.subscriptions = me.subscriptions.filter(subscriptionId => String(subscriptionId) !== String(him._id))
-        await me.save()
-        await him.save()
-        return [me, him]
-    }
 
     async giveRole(id: Types.ObjectId, roleValue: RoleType): Promise<UserDocument> {
         const role = await this.roleModel.findOne({value: roleValue})

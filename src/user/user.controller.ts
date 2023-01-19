@@ -122,12 +122,6 @@ export class UserController {
         return this.userService.subscribe(id, params.id)
     }
 
-    @Post('/unsubscribe/:id')
-    @UseGuards(JwtAuthGuard)
-    unsubscribe(@User('_id') id: Types.ObjectId, @Param() params: SearchParams) {
-        return this.userService.unsubscribe(id, params.id)
-    }
-
     @Post('/give-role/:id')
     // @Roles('admin')
     // @UseGuards(RolesGuard)
