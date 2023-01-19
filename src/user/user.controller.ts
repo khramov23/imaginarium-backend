@@ -5,7 +5,8 @@ import {
     Get,
     Param,
     Patch,
-    Post, Query,
+    Post,
+    Query,
     UploadedFile,
     UseGuards,
     UseInterceptors,
@@ -38,6 +39,12 @@ export class UserController {
     @UseGuards(JwtAuthGuard)
     getAll(@Query() query: PaginationParams) {
         return this.userService.getAll(query)
+    }
+
+    @Get('/get-me')
+    @UseGuards(JwtAuthGuard)
+    getMe(@User('_id') id: Types.ObjectId) {
+        return this.userService.getById(id)
     }
 
     @Get(':id')

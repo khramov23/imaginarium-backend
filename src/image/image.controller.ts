@@ -31,10 +31,14 @@ export class ImageController {
         return this.imageService.getAll(query)
     }
 
-
     @Get('/by-tags')
     getByPopularTags() {
         return this.imageService.getByPopularTags()
+    }
+
+    @Get('/by-id/:id')
+    getById(@Param() params: SearchParams) {
+        return this.imageService.getById(params.id)
     }
 
     @Get('/by-tag/:tagValue')
