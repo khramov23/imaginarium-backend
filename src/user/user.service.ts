@@ -9,6 +9,7 @@ import * as bcrypt from 'bcryptjs'
 import {FileService} from "../file/file.service";
 import {RoleType} from "../role/role.types";
 import {PaginationParams} from "../validators/pagination.validator";
+import {UserResponse} from "../auth/dto/user-response.dto";
 
 @Injectable()
 export class UserService {
@@ -25,6 +26,17 @@ export class UserService {
 
     async getById(id: Types.ObjectId): Promise<UserDocument> {
         return this.userModel.findById(id).populate('role')
+    }
+
+    async getByIdInfo(id: Types.ObjectId): Promise<UserResponse> {
+        const user = await this.userModel.findById(id).populate('role')
+        return new UserResponse(user)
+    }
+
+    async getAllInfo({limit = 100, page = 0}: PaginationParams): Promise<UserResponse[]> {
+        const users = await this.userModel.find().populate('role').skip(+page * +limit).limit(limit)
+        const response = users.map(user => new UserResponse(user))
+        return response
     }
 
     async getByEmail(email: string): Promise<UserDocument> {

@@ -47,10 +47,23 @@ export class UserController {
         return this.userService.getById(id)
     }
 
+    @Get('/info')
+    @UseGuards(JwtAuthGuard)
+    getAllInfo(@Query() query: PaginationParams) {
+        return this.userService.getAllInfo(query)
+    }
+
+
     @Get(':id')
     @UseGuards(JwtAuthGuard)
     getById(@Param() params: SearchParams) {
         return this.userService.getById(params.id)
+    }
+
+    @Get('/info/:id')
+    @UseGuards(JwtAuthGuard)
+    getByIdInfo(@Param() params: SearchParams) {
+        return this.userService.getByIdInfo(params.id)
     }
 
     @Get('/by-username/:username')
