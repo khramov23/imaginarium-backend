@@ -89,19 +89,6 @@ export class UserController {
         return this.userService.create(dto)
     }
 
-    @Delete(':id')
-    @Roles('admin', 'manager')
-    @UseGuards(RolesGuard)
-    delete(@Param() params: SearchParams) {
-        return this.userService.delete(params.id)
-    }
-
-    @Patch(':id')
-    @Roles('admin')
-    @UseGuards(RolesGuard)
-    update(@Param() params: SearchParams, @Body() dto: UpdateUserDto) {
-        return this.userService.update(params.id, dto)
-    }
 
     @Post('/update-password')
     @UseGuards(JwtAuthGuard)
@@ -114,6 +101,20 @@ export class UserController {
     @UseInterceptors(FileInterceptor('avatar'))
     addAvatar(@User('_id') id: Types.ObjectId, @UploadedFile() avatar) {
         return this.userService.addAvatar(id, avatar)
+    }
+
+    @Delete(':id')
+    @Roles('admin', 'manager')
+    @UseGuards(RolesGuard)
+    delete(@Param() params: SearchParams) {
+        return this.userService.delete(params.id)
+    }
+
+    @Patch(':id')
+    @Roles('admin')
+    @UseGuards(RolesGuard)
+    update(@Param() params: SearchParams, @Body() dto: UpdateUserDto) {
+        return this.userService.update(params.id, dto)
     }
 
     @Post('/subscribe/:id')
