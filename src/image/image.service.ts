@@ -92,6 +92,15 @@ export class ImageService {
         return images
     }
 
+    async getFeed(id: Types.ObjectId, {limit = 100, page = 0}: PaginationParams): Promise<ImageDocument[]> {
+        const user = await this.userService.getById(id)
+        return this.imageModel.find({'author': {$in: user.subscriptions}})
+            .sort({'date': -1})
+            .skip(+page * +limit)
+            .limit(+limit)
+            .populate('tags')
+    }
+
     async deleteAll() {
         await this.tagService.deleteAll()
         return this.imageModel.deleteMany()
@@ -120,7 +129,8 @@ export class ImageService {
             height: imageInfo.height,
             colors: imageInfo.colors,
             likes: 0,
-            tags
+            tags,
+            date: Date.now()
         })
 
         user.own.push(img._id)
@@ -155,6 +165,7 @@ export class ImageService {
 
         return image
     }
+
 
 
 }

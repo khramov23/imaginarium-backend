@@ -32,6 +32,9 @@ export class Image {
 
     @Prop([{ type: mongoose.Schema.Types.ObjectId, ref: Tag.name }])
     tags: Tag[]
+
+    @Prop()
+    date: number
 }
 
 export const ImageSchema = SchemaFactory.createForClass(Image);

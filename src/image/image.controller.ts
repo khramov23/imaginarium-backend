@@ -20,6 +20,7 @@ import {Roles} from "../auth/decorators/roles.decorator";
 import {RolesGuard} from "../auth/guards/roles.guard";
 import {ColorName} from "../colors/colors.types";
 import {PaginationParams} from "../validators/pagination.validator";
+import {Types} from "mongoose";
 
 @Controller('images')
 export class ImageController {
@@ -34,6 +35,12 @@ export class ImageController {
     @Get('/by-tags')
     getByPopularTags() {
         return this.imageService.getByPopularTags()
+    }
+
+    @Get("/feed")
+    @UseGuards(JwtAuthGuard)
+    getFeed(@User('_id') id: Types.ObjectId, @Query() query: PaginationParams) {
+        return this.imageService.getFeed(id, query)
     }
 
     @Get('/by-id/:id')
