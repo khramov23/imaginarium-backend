@@ -20,8 +20,8 @@ export class UserService {
         private readonly fileService: FileService
     ) {}
 
-    async getAll({limit = 100, page = 0}: PaginationParams): Promise<UserDocument[]> {
-        return this.userModel.find().populate('role').skip(+page * +limit).limit(limit)
+    async getAll(): Promise<UserDocument[]> {
+        return this.userModel.find().populate('role');
     }
 
     async getById(id: Types.ObjectId): Promise<UserDocument> {

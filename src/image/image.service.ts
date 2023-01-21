@@ -141,6 +141,14 @@ export class ImageService {
 
     async delete(id: Types.ObjectId) {
         const image = await this.imageModel.findById(id)
+        const users = await this.userService.getAll()
+        for (const user of users) {
+            if (user.favorites.includes(image._id))
+                user.favorites = user.favorites.filter(id => String(id) !== String(image._id))
+            if (user.own.includes(image._id))
+                user.own = user.own.filter(id => String(id) !== String(image._id))
+            await user.save()
+        }
         for (const tagId of image.tags)
             await this.tagService.decrementCountById(String(tagId))
         return image.delete()

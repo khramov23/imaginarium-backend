@@ -37,8 +37,8 @@ export class UserController {
 
     @Get()
     @UseGuards(JwtAuthGuard)
-    getAll(@Query() query: PaginationParams) {
-        return this.userService.getAll(query)
+    getAll() {
+        return this.userService.getAll()
     }
 
     @Get('/get-me')
