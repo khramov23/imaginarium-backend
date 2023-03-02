@@ -26,6 +26,7 @@ import {FileInterceptor} from "@nestjs/platform-express";
 import {UpdatePasswordDto} from "./dto/update-password.dto";
 import {RoleType} from "../role/role.types";
 import {PaginationParams} from "../validators/pagination.validator";
+import {AddAvatarDto} from "./dto/add-avatar.dto";
 
 @Controller('users')
 @UsePipes(ValidationPipe)
@@ -99,8 +100,8 @@ export class UserController {
     @Post('/add-avatar')
     @UseGuards(JwtAuthGuard)
     @UseInterceptors(FileInterceptor('avatar'))
-    addAvatar(@User('_id') id: Types.ObjectId, @UploadedFile() avatar) {
-        return this.userService.addAvatar(id, avatar)
+    addAvatar(@User('_id') id: Types.ObjectId, @UploadedFile() avatar, @Body() dto: AddAvatarDto) {
+        return this.userService.addAvatar(id, avatar, dto)
     }
 
     @Delete(':id')

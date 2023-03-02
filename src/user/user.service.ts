@@ -10,6 +10,9 @@ import {FileService} from "../file/file.service";
 import {RoleType} from "../role/role.types";
 import {PaginationParams} from "../validators/pagination.validator";
 import {UserResponse} from "../auth/dto/user-response.dto";
+import {AddAvatarDto} from "./dto/add-avatar.dto";
+import * as jimp from "jimp";
+import * as path from 'path'
 
 @Injectable()
 export class UserService {
@@ -102,9 +105,22 @@ export class UserService {
         return this.userModel.findByIdAndDelete(id)
     }
 
-    async addAvatar(id: Types.ObjectId, avatar: Express.Multer.File): Promise<UserDocument> {
-        const avatarPath = await this.fileService.createFile(avatar, 'avatars')
-        const user = await this.userModel.findByIdAndUpdate(id, {avatar: avatarPath}, {new: true})
+    async addAvatar(id: Types.ObjectId, file: Express.Multer.File, dto: AddAvatarDto): Promise<UserDocument> {
+        const left = parseFloat(dto.left)
+        const top = parseFloat(dto.top)
+        const size = parseFloat(dto.size)
+
+        const fullImageName = await this.fileService.createFile(file, 'avatars')
+        const avatarPath = path.resolve(__dirname, '..', 'static', 'avatars', fullImageName)
+
+        const fullImage = await jimp.read(avatarPath)
+        const width = fullImage.getWidth()
+        const height = fullImage.getHeight()
+        const avatar = fullImage.crop(left * width, top * height, size * width, size * width)
+
+        await avatar.writeAsync(avatarPath)
+
+        const user = await this.userModel.findByIdAndUpdate(id, {avatar: fullImageName}, {new: true})
         return user
     }
 
